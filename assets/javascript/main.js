@@ -8,9 +8,18 @@ var config = {
 };
 firebase.initializeApp(config);
 
-$(document).ready(function{
+$(document).ready(function(){
 
+	var newTrain;
+	var newTraindestination;
+	var newTrainFrequency;
+	var newTrainFirst;
 
+	$("#formSubmit").on("click", function(){
+		event.preventDefault();
+		console.log("submit Button is working");
+
+	}); // form submit event listener ends here
 
 
 });
