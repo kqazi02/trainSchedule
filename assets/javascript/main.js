@@ -13,8 +13,6 @@ $(document).ready(function(){
 
 var database = firebase.database();
 
-	var now = moment().format("HH:mm");
-
 	var newTrain;
 	var newTrainDestination;
 	var newTrainFrequency;
@@ -46,45 +44,47 @@ var database = firebase.database();
 
 	database.ref().on("child_added", function(snapshot){
 
+		//pulling the values from the database and assigning to variables for easier manipulation
 		var trainName = snapshot.val().train;
 		var destination = snapshot.val().destination;
 		var frequency = parseInt(snapshot.val().frequency);
-		console.log("frequency: " + frequency);
 		var firstTrain = snapshot.val().firstTrain;
 
+		//first arrival time of the train converted to moment for time manipulation.
 		var firstArrival = moment(firstTrain, "HH:mm").subtract(1, "years");
-		console.log("first Train: " + firstArrival.format("HH:mm"));
-
-		console.log("current Time: " + moment().format("HH:mm"));
-
+		
+		//calculate the time that has passed since first train and current time.
 		var elapsedTime = moment().diff(firstArrival, "minutes");
-		console.log("elapsedTime: " + elapsedTime);
-				
+		
+		//time remaining for the next train is calcuated by the following
 		var timeRemaining = frequency - elapsedTime%frequency;
 
-		console.log(timeRemaining);
+		//next train will arrive at current time + time remaining
 		var nextTrain = moment().add(timeRemaining, "minutes").format("hh:mm a");
 
+		// create jQuery element for DOM manipulation
 		var row = $("<tr>");
-
 		var trainCell = $("<td>");
 		var destinationCell = $("<td>");
 		var frequencyCell = $("<td>");
 		var arrivalCell = $("<td>");
 		var minutesAwayCell = $("<td>");
 
+		//pushing the values to cells
 		trainCell.html(trainName);
 		destinationCell.html(destination);
 		frequencyCell.html(frequency);
 		arrivalCell.html(nextTrain);
 		minutesAwayCell.html(timeRemaining);
 
+		//pushing the cells to a row
 		row.append(trainCell);
 		row.append(destinationCell);
 		row.append(frequencyCell);
 		row.append(arrivalCell);
 		row.append(minutesAwayCell);
 
+		//pushing the row to the page
 		$("#trainSchedule").append(row);
 
 	}); //event listener for the database update ends here
