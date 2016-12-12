@@ -49,25 +49,20 @@ var database = firebase.database();
 		var trainName = snapshot.val().train;
 		var destination = snapshot.val().destination;
 		var frequency = parseInt(snapshot.val().frequency);
+		console.log("frequency: " + frequency);
 		var firstTrain = snapshot.val().firstTrain;
 
-		var firstArrival = moment(firstTrain, "HH:mm");
+		var firstArrival = moment(firstTrain, "HH:mm").subtract(1, "years");
+		console.log("first Train: " + firstArrival.format("HH:mm"));
+
+		console.log("current Time: " + moment().format("HH:mm"));
 
 		var elapsedTime = moment().diff(firstArrival, "minutes");
+		console.log("elapsedTime: " + elapsedTime);
+				
+		var timeRemaining = frequency - elapsedTime%frequency;
 
-		var timeRemaining = 0;
-
-		if (elapsedTime > frequency){
-			timeRemaining = elapsedTime%frequency;
-		}
-
-		else if (elapsedTime == frequency){
-			timeRemaining = frequency;
-		}
-		else{
-			timeRemaining = frequency-elapsedTime;
-		}
-
+		console.log(timeRemaining);
 		var nextTrain = moment().add(timeRemaining, "minutes").format("hh:mm a");
 
 		var row = $("<tr>");
